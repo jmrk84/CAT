@@ -52,3 +52,8 @@ docs/_build/
 
 # PyBuilder
 target/
+*.iml
+cat/.idea/misc.xml
+cat/.idea/modules.xml
+cat/.idea/vcs.xml
+cat/.idea/workspace.xml

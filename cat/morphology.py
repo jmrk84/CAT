@@ -1,11 +1,30 @@
 import networkx as nx
 import numpy as np
+import urllib
 
 class Skeleton(object):
 
     def __init__(self, skeleton_id, graph ):
         self.skeleton_id = skeleton_id
         self.graph = graph
+#http://localhost:9000/2/treenode/create
+#pid=2&parent_id=38&x=10633.080483977594&y=7484.905043543937&z=120&radius=-1&confidence=5&useneuron=-1&neuron_name=
+
+def add_skeleton_node(connection, skeleton_parent_id, x, y, z, radius=-1, confidence=5, use_neuron=-1):
+
+    post_data = {'skeleton_parent_id' : str(skeleton_parent_id),
+                'x' : str(x),
+                'y' : str(y),
+                'z' : str(z),
+                'radius' : str(confidence),
+                'confidence' : str(confidence),
+                'use_neuron' : str(use_neuron) }
+
+    #data = urllib.urlencode(post_data)
+
+    d = connection.fetch('treenode/create', post = post_data)
+
+    return d
 
 def get_skeleton(connection, skeleton_id):
     """ Fetch a skeleton from the database and return it as a Skeleton object containing
@@ -62,9 +81,10 @@ def get_skeleton(connection, skeleton_id):
     results = connection.fetch('connector/skeletons', postdata)
 
     connectordata = {}
-    if len( results ) != 0:
-        for conn in results:
-            connectordata[conn[0]] = conn[1]
+    if results:
+        if len( results ) != 0:
+            for conn in results:
+                connectordata[conn[0]] = conn[1]
 
     # retrieve the name of the neuron and its id
     neuron = connection.fetch('skeleton/{0}/neuronname'.format(skeleton_id))
